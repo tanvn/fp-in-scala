@@ -42,7 +42,7 @@ object Fibonacci {
 
   def uncurry[A,B,C](f: A => B => C): (A, B) => C = (a : A, b : B )=> f(a)(b)
 
-  def compose[A,B,C](f: B => C, g: A => B): A => C = (a : A ) => f(g(a))
+  def myCompose[A,B,C](f: B => C, g: A => B): A => C = (a : A ) => f(g(a))
 
 
 
@@ -68,9 +68,19 @@ object Fibonacci {
     val p = partial1(5, (a : Int, b : Int) => s"$a and $b")
     println(p(15))
 
-    val comFunc = compose( (a :Int) => a + 3, (b : String) => Integer.parseInt(b))
+    val plus3 = (a :Int) => a + 3
+    val string2Int = (b : String) => Integer.parseInt(b)
+
+    val comFunc = myCompose( plus3, string2Int)
+
+    val comFuncByKeyword = plus3 compose string2Int
+    val comFuncByKeywor2 = string2Int andThen  plus3
 
     println(comFunc("30"))
+    println(comFuncByKeyword("14"))
+    println(comFuncByKeyword("16"))
+
+
 
   }
 
