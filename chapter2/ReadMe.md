@@ -1,0 +1,1 @@
+**Higher-order functions** (HOFs) are functions that take other functions as arguments and may themselves return functions as their output. 
