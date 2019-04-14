@@ -119,6 +119,29 @@ object Option {
     println(sequenceByTraverse(List(Some(10), Some(11), None, Some(1), Some(2))))
     println(sequenceByTraverse(List(Some(1), Some(2), Some(3), Some(4))))
 
+    val a1 = Some(1)
+    val b1 = Some(2)
+    val c1 = Some(3)
+    val d1 = Some(4)
+    val e1 = a1.flatMap{
+      aa => b1.flatMap{
+        bb => c1.flatMap{
+          cc => d1.map{
+            dd => dd + aa + bb + cc
+          }
+        }
+      }
+    }
+
+    println(e1)
+    val e2 = for {
+    aa <- a1
+    bb <- b1
+    cc <- c1
+    dd <- d1
+    } yield aa + bb + cc +dd
+    println(e2)
+
 
 
   }
