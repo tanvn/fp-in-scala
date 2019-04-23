@@ -26,11 +26,4 @@ private case class Node[T](value: Option[T], next: Option[Node[T]])
 object Queue {
   def empty[T]: Queue[T] = Node(None, None)
 
-//  def main(args: Array[String]): Unit = {
-//
-//    val initQueue = Queue.empty[Int]
-//    val add10 = initQueue.enQueue(10)
-//    println(add10)
-//  }
-
 }
