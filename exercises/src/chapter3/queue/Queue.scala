@@ -26,5 +26,4 @@ private case class Node[T](value: Option[T], next: Option[Node[T]])
 object Queue {
   // empty method
   def empty[T]: Queue[T] = Node(None, None)
-
 }
