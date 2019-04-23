@@ -12,7 +12,7 @@ trait Queue[T] {
 private case class Node[T](value: Option[T], next: Option[Node[T]])
     extends Queue[T] {
 
-  //should make it private ?
+  //should make it private ? but it is ok now
   def empty[T]: Node[T] = Node(None, None)
   override def isEmpty: Boolean = value.isEmpty
 
