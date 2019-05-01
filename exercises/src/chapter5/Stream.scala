@@ -7,6 +7,8 @@ sealed trait Stream[+A] {
   def take(n: Int): Stream[A]
   def drop(n: Int): Stream[A]
 
+  def takeWhile(p: A => Boolean): Stream[A]
+
 }
 
 case object Empty extends Stream[Nothing] {
@@ -16,6 +18,8 @@ case object Empty extends Stream[Nothing] {
   override def take(n: Int): Stream[Nothing] = Empty
 
   override def drop(n: Int): Stream[Nothing] = Empty
+
+  override def takeWhile(p: Nothing => Boolean): Stream[Nothing] = Empty
 }
 
 case class Cons[+A](h: () => A, t: () => Stream[A]) extends Stream[A] {
@@ -63,6 +67,10 @@ case class Cons[+A](h: () => A, t: () => Stream[A]) extends Stream[A] {
         case Cons(_, tl) if n == 1 => tl()
 
       }
+
+  override def takeWhile(p: A => Boolean): Stream[A] =
+    if (p(h())) Cons(h, () => t().takeWhile(p)) else t().takeWhile(p)
+
 }
 
 object Stream {
@@ -89,6 +97,8 @@ object Stream {
     println(myStream.drop(1).toListWithTailRec)
     println(myStream.drop(12).toListWithTailRec)
     println(myStream.drop(0).toListWithTailRec)
+    println(myStream.takeWhile(e => e % 2 == 0).toListWithTailRec)
+    println(myStream.takeWhile(e => e + 1 > 4).toListWithTailRec)
 
   }
 }
