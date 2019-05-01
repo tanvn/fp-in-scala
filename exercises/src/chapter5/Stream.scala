@@ -99,6 +99,7 @@ object Stream {
     println(myStream.drop(0).toListWithTailRec)
     println(myStream.takeWhile(e => e % 2 == 0).toListWithTailRec)
     println(myStream.takeWhile(e => e + 1 > 4).toListWithTailRec)
+    println(myStream.takeWhile(e => e + 1 > 10))
 
   }
 }
