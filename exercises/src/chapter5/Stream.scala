@@ -95,6 +95,9 @@ case class Cons[+A](h: () => A, t: () => Stream[A]) extends Stream[A] {
     foldRight(Stream.empty[A])((a, b) => {
       println("executing f of foldRight")
       if (p(a)) {
+        //here a really lazy Cons is created, since b is unevaluated when passing to the function f of foldRight,
+        // here it will stay unevaluated because it is wrapped into a function () => b.
+        // Its value will be evaluated only when we convert the stream into a list, that's why I add many comments to track the flow :D
         println(s"return a lazy Cons with head is ${a}")
         Cons(() => a, () => {
           b
