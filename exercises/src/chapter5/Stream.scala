@@ -14,6 +14,10 @@ sealed trait Stream[+A] {
   def exists(p: A => Boolean): Boolean
   def forAll(p: A => Boolean): Boolean
 
+  def headOption: Option[A]
+
+  def map[B](f: A => B): Stream[B]
+
 }
 
 case object Empty extends Stream[Nothing] {
@@ -33,6 +37,10 @@ case object Empty extends Stream[Nothing] {
   override def forAll(p: Nothing => Boolean): Boolean = true
 
   override def filter(p: Nothing => Boolean): Stream[Nothing] = Empty
+
+  override def headOption: Option[Nothing] = None
+
+  override def map[B](f: Nothing => B): Stream[B] = Empty
 }
 
 case class Cons[+A](h: () => A, t: () => Stream[A]) extends Stream[A] {
@@ -142,6 +150,12 @@ case class Cons[+A](h: () => A, t: () => Stream[A]) extends Stream[A] {
   }
   override def forAll(p: A => Boolean): Boolean =
     foldRight(true)((a, b) => p(a) && b)
+
+  override def headOption: Option[A] =
+    foldRight(Option.empty[A])((a, _) => Some(a))
+
+  override def map[B](f: A => B): Stream[B] =
+    foldRight(Stream.empty[B])((a: A, b) => Cons(() => f(a), () => b))
 }
 
 object Stream {
@@ -184,6 +198,8 @@ object Stream {
     println("filter check")
     println(myStream.filter(a => a % 3 == 0).toListWithTailRec)
 //    println(myStream.filter(a => a % 2 == 0).toListWithTailRec)
+    println(myStream.headOption)
+    println(myStream.map(a => a * 2).toListWithTailRec)
 
   }
 }
