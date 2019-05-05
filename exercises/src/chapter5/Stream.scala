@@ -8,6 +8,11 @@ sealed trait Stream[+A] {
   def drop(n: Int): Stream[A]
 
   def takeWhile(p: A => Boolean): Stream[A]
+  def filter(p: A => Boolean): Stream[A]
+
+  def foldRight[B](z: => B)(f: (A, => B) => B): B
+  def exists(p: A => Boolean): Boolean
+  def forAll(p: A => Boolean): Boolean
 
 }
 
@@ -20,17 +25,32 @@ case object Empty extends Stream[Nothing] {
   override def drop(n: Int): Stream[Nothing] = Empty
 
   override def takeWhile(p: Nothing => Boolean): Stream[Nothing] = Empty
+
+  override def foldRight[B](z: => B)(f: (Nothing, => B) => B): B = z
+
+  override def exists(p: Nothing => Boolean): Boolean = false
+
+  override def forAll(p: Nothing => Boolean): Boolean = true
+
+  override def filter(p: Nothing => Boolean): Stream[Nothing] = Empty
 }
 
 case class Cons[+A](h: () => A, t: () => Stream[A]) extends Stream[A] {
   override def toList: List[A] = List(h()) ++ t().toList
 
   override def toListWithTailRec: List[A] = {
+    println(s"Start convert Cons to a List")
 
     @annotation.tailrec
     def go(s: Stream[A], acc: List[A]): List[A] = s match {
-      case Cons(h, t) => go(t(), acc :+ h())
-      case Empty      => acc
+      case Cons(h, t) => {
+        println(s"go with tail, and add ${h()} to list")
+        go(t(), acc :+ h())
+      }
+      case Empty => {
+        println("List is empty, return the accumulated list")
+        acc
+      }
     }
     go(this, List.empty)
   }
@@ -68,9 +88,57 @@ case class Cons[+A](h: () => A, t: () => Stream[A]) extends Stream[A] {
 
       }
 
-  override def takeWhile(p: A => Boolean): Stream[A] =
+  def takeWhileOld(p: A => Boolean): Stream[A] =
     if (p(h())) Cons(h, () => t().takeWhile(p)) else t().takeWhile(p)
 
+  override def takeWhile(p: A => Boolean): Stream[A] =
+    foldRight(Stream.empty[A])((a, b) => {
+      println("executing f of foldRight")
+      if (p(a)) {
+        println(s"return a lazy Cons with head is ${a}")
+        Cons(() => a, () => {
+          b
+        })
+      } else {
+        println("return Empty of takeWhile")
+        // if instead of returning Stream.empty[A] (as below) with b,
+        // we will have a filter (take all the elements that satisfy p)
+        //see filter function below
+        Stream.empty[A]
+      }
+    })
+
+  override def filter(p: A => Boolean): Stream[A] =
+    foldRight(Stream.empty[A])((a, b) => {
+      if (p(a)) {
+        Cons(() => a, () => {
+          b
+        })
+      } else {
+        b
+      }
+    })
+
+  override def foldRight[B](z: => B)(f: (A, => B) => B): B = this match {
+    case Cons(hd, tl) => {
+      println(s"foldRight head is ${hd()}")
+      f(hd(), tl().foldRight(z)(f))
+    }
+    case _ => z
+  }
+
+  override def exists(p: A => Boolean): Boolean =
+    foldRight(false)((a, b) => p(a) || b)
+
+  def forAllOld(p: A => Boolean): Boolean = this match {
+    case Cons(hd, tl) => {
+      //println(s"head is ${hd()}")
+      p(hd()) && tl().forAll(p)
+    }
+    case _ => false
+  }
+  override def forAll(p: A => Boolean): Boolean =
+    foldRight(true)((a, b) => p(a) && b)
 }
 
 object Stream {
@@ -88,18 +156,31 @@ object Stream {
   def main(args: Array[String]): Unit = {
 
     val myStream = Stream(1, 2, 3, 4, 5, 6, 7)
-    println(myStream.toList)
-    println(myStream.toListWithTailRec)
+//    println(myStream.toList)
+//    println(myStream.toListWithTailRec)
+//
+//    println(myStream.take(3).toListWithTailRec)
+//    println(myStream.take(10).toListWithTailRec)
+//    println(myStream.drop(4).toListWithTailRec)
+//    println(myStream.drop(1).toListWithTailRec)
+//    println(myStream.drop(12).toListWithTailRec)
+//    println(myStream.drop(0).toListWithTailRec)
 
-    println(myStream.take(3).toListWithTailRec)
-    println(myStream.take(10).toListWithTailRec)
-    println(myStream.drop(4).toListWithTailRec)
-    println(myStream.drop(1).toListWithTailRec)
-    println(myStream.drop(12).toListWithTailRec)
-    println(myStream.drop(0).toListWithTailRec)
+    println("takeWhile start")
+    println(myStream.takeWhile(e => e <= 2).toListWithTailRec)
     println(myStream.takeWhile(e => e % 2 == 0).toListWithTailRec)
-    println(myStream.takeWhile(e => e + 1 > 4).toListWithTailRec)
     println(myStream.takeWhile(e => e + 1 > 10))
+
+    println("check exist")
+    println(myStream.exists(a => a % 3 == 0))
+    println(myStream.exists(a => a % 6 == 0))
+
+    println("forAll check")
+    println(myStream.forAll(a => a % 3 == 0))
+    println(myStream.forAll(a => a >= 0))
+    println("filter check")
+    println(myStream.filter(a => a % 3 == 0).toListWithTailRec)
+//    println(myStream.filter(a => a % 2 == 0).toListWithTailRec)
 
   }
 }
