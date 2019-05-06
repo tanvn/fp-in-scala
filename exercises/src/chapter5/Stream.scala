@@ -18,6 +18,7 @@ sealed trait Stream[+A] {
 
   def map[B](f: A => B): Stream[B]
 
+  def append[B >: A](s: => Stream[B]): Stream[B]
 }
 
 case object Empty extends Stream[Nothing] {
@@ -41,6 +42,8 @@ case object Empty extends Stream[Nothing] {
   override def headOption: Option[Nothing] = None
 
   override def map[B](f: Nothing => B): Stream[B] = Empty
+
+  override def append[B >: Nothing](s: => Stream[B]): Stream[B] = s
 }
 
 case class Cons[+A](h: () => A, t: () => Stream[A]) extends Stream[A] {
@@ -156,6 +159,9 @@ case class Cons[+A](h: () => A, t: () => Stream[A]) extends Stream[A] {
 
   override def map[B](f: A => B): Stream[B] =
     foldRight(Stream.empty[B])((a: A, b) => Cons(() => f(a), () => b))
+
+  override def append[B >: A](s: => Stream[B]): Stream[B] =
+    foldRight(s)((a, b) => Cons(() => a, () => b))
 }
 
 object Stream {
@@ -200,6 +206,9 @@ object Stream {
 //    println(myStream.filter(a => a % 2 == 0).toListWithTailRec)
     println(myStream.headOption)
     println(myStream.map(a => a * 2).toListWithTailRec)
+
+    println("append check")
+    println(myStream.append(Stream(10, 11, 12)).toListWithTailRec)
 
   }
 }
