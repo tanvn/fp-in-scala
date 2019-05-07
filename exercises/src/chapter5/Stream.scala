@@ -171,6 +171,22 @@ object Stream {
     Cons(() => head, () => tail)
   }
 
+  def constant[A](a: A): Stream[A] = {
+    lazy val src: Stream[A] = Stream.cons(a, src)
+    src
+  }
+
+  def from(n: Int): Stream[Int] = Stream.cons(n, from(n + 1))
+
+  def numbersWithStep(from: Int, step: Int): Stream[Int] =
+    Stream.cons(from, numbersWithStep(from + step, step))
+
+  def fibs: Stream[Int] = {
+    def go(prev1: Int, prev2: Int): Stream[Int] =
+      Stream.cons(prev1, go(prev2, prev2 + prev1))
+    go(0, 1)
+  }
+
   def empty[A]: Stream[A] = Empty
 
   def apply[A](as: A*): Stream[A] =
@@ -209,6 +225,26 @@ object Stream {
 
     println("append check")
     println(myStream.append(Stream(10, 11, 12)).toListWithTailRec)
+
+    println("map then filter check")
+    println(Stream(1, 2, 3, 4).map(_ + 10).filter(_ % 2 == 0).toListWithTailRec)
+
+    lazy val ones: Stream[Int] = Stream.cons(1, ones)
+    // println(ones.takeWhile(_ == 1).toListWithTailRec) //infinitely run
+    println(ones.take(10).toListWithTailRec)
+
+    println(Stream.constant(10).take(5).toListWithTailRec)
+    println(Stream.from(10).take(10).toListWithTailRec)
+    println(Stream.numbersWithStep(10, 2).take(10).toListWithTailRec)
+    println(Stream.fibs.take(10).toListWithTailRec)
+
+    val fibs = {
+      def go(f0: Int, f1: Int): Stream[Int] =
+        cons(f0, go(f1, f0 + f1))
+      go(0, 1)
+    }
+
+    println(fibs.take(10).toListWithTailRec)
 
   }
 }
