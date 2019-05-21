@@ -187,6 +187,18 @@ object Stream {
     go(0, 1)
   }
 
+  def fibsFromUnFold: Stream[Int] = {
+    unfold((0, 1))(state => Some(state._1, (state._2, state._1 + state._2)))
+  }
+
+  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = {
+    f(z) match {
+      case None         => Stream.empty[A]
+      case Some((a, s)) => Stream.cons(a, unfold(s)(f))
+    }
+
+  }
+
   def empty[A]: Stream[A] = Empty
 
   def apply[A](as: A*): Stream[A] =
@@ -245,6 +257,9 @@ object Stream {
     }
 
     println(fibs.take(10).toListWithTailRec)
+    val unfoldInt = unfold(1)(a => Some(a, 10 - a))
+    println(unfoldInt.take(10).toListWithTailRec)
 
+    println(fibsFromUnFold.take(10).toListWithTailRec)
   }
 }
