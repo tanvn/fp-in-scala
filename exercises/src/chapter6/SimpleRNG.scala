@@ -73,7 +73,10 @@ object SimpleRNG {
     }
 
   def sequence2[A](fs: List[Rand[A]]): Rand[List[A]] =
-    fs.foldRight(unit(List[A]()))((f, acc) => map2(f, acc)(_ :: _))
+//    fs.foldRight(unit(List[A]()))((f, acc: Rand[List[A]]) => map2(f, acc)(_ :: _))
+    fs.foldRight(unit(List[A]()))(
+      (f, acc: Rand[List[A]]) => map2(f, acc)((a: A, b: List[A]) => a :: b)
+    )
 
   def sequence[A](fs: List[Rand[A]]): Rand[List[A]] = rng => {
     fs.foldLeft(List.empty[A], rng)(
