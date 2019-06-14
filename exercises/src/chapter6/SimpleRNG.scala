@@ -43,6 +43,11 @@ object SimpleRNG {
 
   val stringRand: Rand[String] = _.nextStr
 
+  val intRand3: Rand[Int] = (rng) => {
+    val (n, rng2) = rng.nextInt
+    (Math.abs(n - 5555), rng2)
+  }
+
   //  val doubleRand : Rand[Double] = (rng) => {
   //    rng.nextInt * 1.5
   //  }
@@ -61,11 +66,23 @@ object SimpleRNG {
       //    val a3 : A = _
       //    val res: (A, RNG) = ra(a3)
       val (newA, rngA2: RNG) = ra(rng)
-      val (newB, _: RNG) = rb(rng)
+      val (newB, rngB2: RNG) = rb(rngA2)
 
-      (f(newA, newB), rngA2)
+      (f(newA, newB), rngB2)
 
     }
+
+  def sequence2[A](fs: List[Rand[A]]): Rand[List[A]] =
+    fs.foldRight(unit(List[A]()))((f, acc) => map2(f, acc)(_ :: _))
+
+  def sequence[A](fs: List[Rand[A]]): Rand[List[A]] = rng => {
+    fs.foldLeft(List.empty[A], rng)(
+      (current: (List[A], RNG), next: Rand[A]) => {
+        val (nextVal, nextRng) = next(current._2)
+        (current._1 ::: nextVal :: Nil, nextRng)
+      }
+    )
+  }
 
   def main(args: Array[String]): Unit = {
     val (n, nextRNG) = SimpleRNG(42).nextInt
@@ -91,6 +108,16 @@ object SimpleRNG {
       newSeed = res._2
 
     }
+
+    val seq2: Rand[List[Int]] = sequence2(
+      List(_.nextInt, _.nonNegativeInt, intRand3)
+    )
+    println(seq2(seed))
+
+    val seqMe: Rand[List[Int]] = sequence(
+      List(_.nextInt, _.nonNegativeInt, intRand3)
+    )
+    println(seqMe(seed))
 
   }
 }
