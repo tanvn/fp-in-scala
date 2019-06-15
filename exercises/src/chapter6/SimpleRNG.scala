@@ -55,12 +55,6 @@ object SimpleRNG {
   def unit[A](a: A): Rand[A] =
     rng => (a, rng)
 
-  def map[A, B](s: Rand[A])(f: A => B): Rand[B] =
-    (rng: RNG) => {
-      val (a, rng2: RNG) = s(rng)
-      (f(a), rng2)
-    }
-
   def map2[A, B, C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] =
     (rng: RNG) => {
       //    val a3 : A = _
@@ -127,6 +121,21 @@ object SimpleRNG {
     )
   }
 
+  def flatMap[A, B](f: Rand[A])(g: A => Rand[B]): Rand[B] = rng => {
+    val (a, rngA) = f(rng)
+    val res: Rand[B] = g(a)
+    res(rngA)
+  }
+
+  def map[A, B](s: Rand[A])(f: A => B): Rand[B] =
+    (rng: RNG) => {
+      val (a, rng2: RNG) = s(rng)
+      (f(a), rng2)
+    }
+
+  def mapWithFlatMap[A, B](s: Rand[A])(f: A => B): Rand[B] =
+    flatMap(s)(a => rng => (f(a), rng))
+
   def main(args: Array[String]): Unit = {
     val (n, nextRNG) = SimpleRNG(42).nextInt
     println(n)
@@ -141,15 +150,14 @@ object SimpleRNG {
     val seed = SimpleRNG(2000)
     println(ints(10)(seed))
     println(map(intRand)(i => s"value $i")(seed))
+    println(mapWithFlatMap(intRand)(i => s"value $i")(seed))
 
     val map2Test = map2(intRand, stringRand)((a, b) => s"$a vs $b")
     var newSeed: RNG = seed
     for (_ <- 1 to 10) {
-
-      var res = map2Test(newSeed)
+      val res = map2Test(newSeed)
       println(res._1)
       newSeed = res._2
-
     }
 
     val seq2: Rand[List[Int]] = sequence2(
