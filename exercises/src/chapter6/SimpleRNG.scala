@@ -124,9 +124,11 @@ object SimpleRNG {
   def flatMap[A, B](f: Rand[A])(g: A => Rand[B]): Rand[B] = rng => {
     val (a, rngA) = f(rng)
     val res: Rand[B] = g(a)
+    //call res with next state of rng
     res(rngA)
   }
 
+  // return f(a) and next state of rng
   def map[A, B](s: Rand[A])(f: A => B): Rand[B] =
     (rng: RNG) => {
       val (a, rng2: RNG) = s(rng)
@@ -134,6 +136,7 @@ object SimpleRNG {
     }
 
   def mapWithFlatMap[A, B](s: Rand[A])(f: A => B): Rand[B] =
+    // rng => (f(a), rng) return f(a) and rng (unchanged)
     flatMap(s)(a => rng => (f(a), rng))
 
   def main(args: Array[String]): Unit = {
