@@ -72,6 +72,46 @@ object SimpleRNG {
 
     }
 
+  //  Explain how sequence2 works
+  //  Input of List[Rand[A] as : List(f1, f2, f3)
+//
+//  init (List.empty) : Rand[List[A]] = (unitRNG) => (List.Empty, unitRNG)
+//  Fold from right, so :
+//  start with f3 and init
+//    rngF3 = map2(f3, init) {
+//    (rng) => {
+//      a : A3, rngNew = f3(rng)
+//      b : List[A], rngNew2 = init(rngNew)
+//      //b is Empty, rngNew2 = rngNew is next state of rng  (1 transition)
+//      (A3::Nil, rngNew )	// rngNew is 1 step transition from rng
+//    }
+//
+//  }
+//
+//  next with f2 and the above result rngF3
+//
+//    rngF2 = map2(f2, rngF3 =(rngInput) => (A3::Nil, nextStateOfRng)) {
+//    (rng) => {
+//      a : A2, rngNew = f2(rng) // state transition 1
+//      b : List[A](A3), rngNew2 = rngF3(rngNew) // state transition : 1 (explained above)
+//
+//      (A2::A3::Nil, rngNew2) //rngNew2 is 2 step transition from rng
+//    }
+//
+//  }
+//
+//  next with f2 and the above result rngF2
+//
+//    rngF1 = map2(f1, rngF2 =(rngInput) => (A2::A3::Nil, nextStateOfRng)) {
+//    (rng) => {
+//      a : A1, rngNew = f1(rng) //state transition : 1
+//      b : List[A](A2, A3), rngNew2 = rngF2(rngNew) //state transitions : 2  (explained above)
+//      (A1::A2::A3::Nil, rngNew2) //rngNew2 is 3 (2 + 1) step transition from rng
+//    }
+//
+//  }
+//  rngF1 is returned, which is (rng) => (A1::A2::A3::Nil, rngNew2) with rngNew2 is 3 times transitions
+
   def sequence2[A](fs: List[Rand[A]]): Rand[List[A]] =
 //    fs.foldRight(unit(List[A]()))((f, acc: Rand[List[A]]) => map2(f, acc)(_ :: _))
     fs.foldRight(unit(List[A]()))(
