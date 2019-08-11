@@ -269,8 +269,9 @@ that calls `run`.
 
 Almost the same. `foldLeft` with 9 rounds 
 
-- round 1 : map2 with `unit(List.empty)` and `lazyUnit(Math.sqrt(1))` ->
-  `par1`
+- round 1 : `map2` with `unit(List.empty)` and `lazyUnit(Math.sqrt(1))`
+  -> `par1` (returned Par which will be passed to next round of
+  foldLeft)
 - round 2 : `map2` with `par1` and `lazyUnit(Math.sqrt(2))` -> `par2`
 - round 3 : `map2` with `par2` and `lazyUnit(Math.sqrt(3))` -> `par3`
 - round 4: `map2` with `par3` and `lazyUnit(Math.sqrt(4))` -> `par4`
