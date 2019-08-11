@@ -10,51 +10,23 @@
   
   ``` val p: Par[List[Double]] = parMap(List.range(1,3))(math.sqrt(_))```
   
-  parMap got : List(1,2), f = Math.sqrt
+  So `p` is the result when calling `parMap` with : `List(1,2)`, `f =
+  Math.sqrt`. What `parMap` returns ?
   
-  The body of parMap will be run in the `apply` function of the Future
-  created in `fork`. 
+ ```
+  def parMap[A, B](ps: List[A])(f: A => B): Par[List[B]] = fork {
+    println(s"${Thread.currentThread().getName} parMap for List=$ps")
+    val fbs: List[Par[B]] = ps.map(asyncF(f))
+    val res = sequence(fbs)
+    println(s"${Thread.currentThread().getName} res=$res")
+    res
+  }
+  ```
+   Fist of all, it returns a `Par[List[Double]]`. `parMap` simply return
+   a Par wich will produces a `Future` whose `apply` method will call
+   the `parMap` block of code inside `fork` in a new thread (via `eval`) 
   
-  So the important thing here is to understand what `parMap` do, what is
-  it representation. Ok, let's take a look, step by step.
-  
-```    
-  val fbs: List[Par[B]] = ps.map(asyncF(f))
-```
-
-ps is our List(1,2). So fbs will be a List of `Par[B]`
-
-Next, `sequence(fbs)` will turn `List[Par[B]]` into a `Par[List[B]]`
-
-In sequence, we use foldLeft to accumulate result of each Par into a
-List 
-
-```
-    ps.foldLeft(unit(List.empty[A]))((l, f) => {
-      println(s"in foldLeft $l, $f")
-      map2(l, f)((l, f) => l :+ f)
-    })
-```
-
-first round of foldLeft, 
-
-`l = unit(List.empty[A])`, 
-
-`f=lazyUnit(Math.sqrt(1))` 
-
-we have a `Par[List[Double]]` par1 for this round (actually, this par1
-will return a `Future[List[Double]]` with value `Future[List(1)]`
-
-next round of foldLeft will be 
-
-`l = par1`,
-
-`f=lazyUnit(Math.sqrt(2))` 
-
-and return a new `Par[List[Double]]` par2.
-
-Now, par2 will be the return of `sequence(fbs)` and it will be pass to
-`run` as `p`. So next we will look at what `run` does.
+ Next we will look at what `run` does.
 
 ```
   def run[A](es: ExecutorService)(p: Par[A]): A = {
@@ -74,7 +46,82 @@ Now, par2 will be the return of `sequence(fbs)` and it will be pass to
 it call `p` with an ExecutorService to get a Future, call the Future's
 apply with the `cb` to get the result and saves it to the
 AtomicReference ref and finally returns it. So, when `p` is call with
-`es`, what really happens ? `p` is the result of `map2`
+`es`, what really happens ? `p` is the result of calling `parMap`. When
+`p(es)(cb)` is executed, the `apply` of Future in `fork` method is
+called, 
+
+```
+  def fork[A](a: => Par[A]): Par[A] =
+    es => {
+      // equal to p(es) of line 23, when line 23: p(es)(cb) is executed, it is equal to the below Future's apply is called
+      new Future[A] {
+        override private[chapter7] def apply(cb: A => Unit): Unit = {
+          println(s"${Thread.currentThread().getName} in fork $cb")
+          // a is parMap body, run a(es) in a new thread
+          eval(es)(a(es)(cb))
+        }
+
+      }
+    }
+ ```
+
+resulting in execute the `parMap` block of code inside `fork` is
+executed.
+
+ ```
+      println(s"${Thread.currentThread().getName} parMap for List=$ps")
+    val fbs: List[Par[B]] = ps.map(asyncF(f))
+    val res = sequence(fbs)
+    println(s"${Thread.currentThread().getName} res=$res")
+    // here with ps is List(1), res will be the result of map2(unit(List.empty[A]), lazyUnit(math.sqrt(1)))((l, f) => l :+ f))
+    // the foldLeft is called once
+    res
+ ```
+   The above block will result in a Par, and that Par will be call with
+  an `es` and `apply` with the callback `cb` of `run`.
+  
+  So the important thing here is to understand what the code block of
+  `parMap` above does and returns, what is it representation. Ok, let's
+  take a look, step by step. Starts from
+  
+```    
+  val fbs: List[Par[B]] = ps.map(asyncF(f))
+```
+
+`ps` is our List(1,2). So fbs will be a List of `Par[B]`
+
+Next, `sequence(fbs)` will turn `List[Par[B]]` into a `Par[List[B]]`
+
+In `sequence`, we use foldLeft to accumulate result of each Par into a
+List 
+
+```
+    ps.foldLeft(unit(List.empty[A]))((l, f) => {
+      println(s"in foldLeft $l, $f")
+      map2(l, f)((l, f) => l :+ f))
+    })
+```
+
+first round of foldLeft, 
+
+`l = unit(List.empty[A])`, 
+
+`f=lazyUnit(Math.sqrt(1))` 
+
+we have a `Par[List[Double]]` par1 for this round.
+
+Next round of foldLeft will be 
+
+`l = par1`,
+
+`f=lazyUnit(Math.sqrt(2))` 
+
+and return a new `Par[List[Double]]` par2.
+
+Now, `par2` will be the return of `sequence(fbs)`, `par2` will be call
+with `es` to get an Future, that Future will be call with the callback
+`cb` of `run`. To understand what `par2` return, let's take a look at
+`map2` because `sequence` call foldLeft with `map2` inside.
 
 ```
   def map2[A, B, C](p: Par[A], p2: Par[B])(f: (A, B) => C): Par[C] = { es =>
@@ -108,13 +155,15 @@ AtomicReference ref and finally returns it. So, when `p` is call with
     }
   }
   ```
-  That means, when calling `p(es)` means, a `Future[C]` is returned.
-  Then `p(es)(cb)` mean calling the `apply` method on the returned
+  The part `p(es)` of `p(es)(cb)` in `run` results in a `Future[C]`.
+  Actually `p(es)` is equal to `map2(par1, lazyUnit(Math.sqrt(2)))((l,
+  f) => l :+ f))(es)`, which returns a `Future[C]` as in the code block
+  above . Then `p(es)(cb)` means calling the `apply` method on the
   `Future[C]` passing the `cb` defined in the `run`. What the `apply` of
   `Future[C]` method do ? (here C is equal to `List[Double]`). Inside
   `apply`, we call each Par with the ExecutorService to get a Future,
   from the Future, call it `apply` method to pass the result to the
-  `combiner` (an Actor) 
+  `combiner` (an Actor)
   
   ```
         p(es)(a => {
