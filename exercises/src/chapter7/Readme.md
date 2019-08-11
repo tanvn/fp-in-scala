@@ -199,11 +199,11 @@ calling `par1(es)` is actually to call the body of function returned by
 `map2` with parameters as above. Again, it calculates
 `unit(List.empty[A])(es)` to get an Future, immediately call its apply
 method to pass the result (`List.empty[A]`) to the `combiner`.
-`p2=lazyUnit(Math.sqrt(1))` is called with `es` and then the Future
-`apply` to pass the result (Math.sqrt(1) here) to the `combiner`.
-Finally the `combiner` call the function f which combine the results to
-`List.empty[Double] :+ Math.sqrt(1)` which in fact is `List(1)`.
-Consider `par1(es)` :
+`p2=lazyUnit(Math.sqrt(1))` is called with `es` to get a Future, the
+Future `apply` then is called to pass the result (Math.sqrt(1)) to the
+`combiner`. Finally the `combiner` calls the function `f` which combines
+the results of 2 Par into a `List.empty[Double] :+ Math.sqrt(1)` which
+in fact is `List(1)`. Consider `par1(es)` :
 
 ```
 par1(es)(a => {
@@ -213,10 +213,9 @@ par1(es)(a => {
 ```
 the parameter `a` of the callback passed to `par1(es)` is the result of
 `f(a, b)` in the `combiner` of Future returned by `par1(es)` which means
-`a = List.empty`, `b= Math.sqrt(1)` So `a` here is List(1), that `a` is
-pass to `combiner` of Future returned from `p(es)`. Similarly, for `p2=lazyUnit(Math.sqrt(2))` 
-
-
+`a = List.empty`, `b= Math.sqrt(1)` and `f(a,b)= List(1)`. So `a` here
+is List(1), that `a` is passed to the `combiner` of Future returned from
+`p(es)` (called in `run`). Similarly, for `p2=lazyUnit(Math.sqrt(2))`
 
 ```
 lazyUnit(Math.sqrt(2))(es)(b => {
@@ -227,15 +226,14 @@ lazyUnit(Math.sqrt(2))(es)(b => {
 
 the `b` parameter of the callback is `Math.sqrt(2)`, is passed to the
 `combiner`, when the `combiner` received both `List(1)` and
-`Math.sqrt(2)`, it call the callback `cb` of `run` on the result of
+`Math.sqrt(2)`, it calls the callback `cb` of `run` on the result of
 `f(List(1), Math.sqrt(2))` (with f is the function to append an element
-to the list) in a new thread, so the final result is created : List(1,
-Math.sqrt(2))
+to the list) in a new thread, so the final result is created : `List(1,
+Math.sqrt(2))`
 
-So, is `par1` calculated on threads different to `p` (declared inside
-main method)?
+So, is `par1` calculated on multi threads ?
 
-again we need to see the code : 
+Again we need to see the code : 
 
 ```
 par1(es)(a => {
@@ -247,9 +245,9 @@ par1(es)(a => {
 the question is how `par1(es)` calculated ? `par1` is the `map2` call
 with 2 Par parameters : `p = unit(List.empty)` and
 `p2=lazyUnit(Math.sqrt(1))` , `unit` does not submit the task to the
-`es` because it just returns a Future whose apply method is called on
-the value passed to `unit` (here it is `List.empty`) but `lazyUnit` use
-`fork` 
+`es` because it just returns a Future whose `apply` method will call the
+passed callback method on the value passed to `unit` (here it is
+`List.empty`) but `lazyUnit` use `fork`
 
 ```
   def lazyUnit[A](a: => A): Par[A] = fork(unit(a))
@@ -259,6 +257,8 @@ thread. So, `par1(es)` is calculated on multi-thread (here there are 2
 threads used for `p` and `p2` ) ,further more, `p` and `p2` Future's
 callbacks pass results to `combiner` which handles messages on different
 threads and call the final callback `eval(es)(cb(f(a, b)))` on different
-threads too.
+threads too. And remember, `parMap` uses `fork` too, which means the
+block inside `fork` is executed on a different thread from the thread
+that calls `run`.
   
   
