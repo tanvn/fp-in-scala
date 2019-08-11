@@ -118,7 +118,7 @@ Next round of foldLeft will be
 
 and return a new `Par[List[Double]]` par2.
 
-Now, `par2` will be the return of `sequence(fbs)`, `par2` will be call
+Now, `par2` will be the return of `sequence(fbs)`, `par2` will be called
 with `es` to get an Future, that Future will be call with the callback
 `cb` of `run`. To understand what `par2` return, let's take a look at
 `map2` because `sequence` call foldLeft with `map2` inside.
@@ -159,11 +159,11 @@ with `es` to get an Future, that Future will be call with the callback
   Actually `p(es)` is equal to `map2(par1, lazyUnit(Math.sqrt(2)))((l,
   f) => l :+ f))(es)`, which returns a `Future[C]` as in the code block
   above . Then `p(es)(cb)` means calling the `apply` method on the
-  `Future[C]` passing the `cb` defined in the `run`. What the `apply` of
-  `Future[C]` method do ? (here C is equal to `List[Double]`). Inside
-  `apply`, we call each Par with the ExecutorService to get a Future,
-  from the Future, call it `apply` method to pass the result to the
-  `combiner` (an Actor)
+  `Future[C]` passing the `cb` defined in the `run`. What does the
+  `apply` of `Future[C]` method do ? (here C is equal to
+  `List[Double]`). Inside `apply`, we call each Par with the
+  ExecutorService to get a Future, from the Future, call it `apply`
+  method to pass the result to the `combiner` (an Actor)
   
   ```
         p(es)(a => {
@@ -177,10 +177,10 @@ with `es` to get an Future, that Future will be call with the callback
   
   ```
   
-  When the combiner received both results of 2 Par, it calls the
-  callback `cb` passed to the `Future[C]` on a new Thread (via eval
-  method). Let's take a look at `p` and `p2`, from the result of `map2`
-  we got above, we have :
+  When the `combiner` received both results of 2 Par, it calls the
+  callback `cb` passed to the `Future[C]` on a new Thread (via `eval`
+  method). Let's take a look at `p` and `p2` (values passed to `map2`),
+  we have :
   
 `p = par1`,
 
@@ -188,21 +188,22 @@ with `es` to get an Future, that Future will be call with the callback
 
 So, `par1` is called with the `es` to produce an `Future[List[Double]]`
 and immediately called the Future apply to pass the `List[Double]` to
-the combiner. So again, what is `par1` ? `par1` is a `Par[List[Double]`
-we got then call `map2` with 
+the `combiner`. So again, what is `par1` ? `par1` is a
+`Par[List[Double]` we got when calling `map2` with parameters:
 
 `p = unit(List.empty[A])`, 
 
 `p2=lazyUnit(Math.sqrt(1))` 
 
 calling `par1(es)` is actually to call the body of function returned by
-`map2`. Again, it calculate `unit(List.empty[A])(es)` to get an Future,
-immediately call its apply method to pass the result (`List.empty[A]`)
-to the `combiner`. `p2=lazyUnit(Math.sqrt(1))` is called with `es` and
-then the Future `apply` to pass the result (Math.sqrt(1) here) to the
-`combiner`. Finally the `combiner` call the function f which combine the
-results to `List.empty[Double] :+ Math.sqrt(1)` which in fact is
-`List(1)`. Consider `par1(es)` :
+`map2` with parameters as above. Again, it calculates
+`unit(List.empty[A])(es)` to get an Future, immediately call its apply
+method to pass the result (`List.empty[A]`) to the `combiner`.
+`p2=lazyUnit(Math.sqrt(1))` is called with `es` and then the Future
+`apply` to pass the result (Math.sqrt(1) here) to the `combiner`.
+Finally the `combiner` call the function f which combine the results to
+`List.empty[Double] :+ Math.sqrt(1)` which in fact is `List(1)`.
+Consider `par1(es)` :
 
 ```
 par1(es)(a => {
