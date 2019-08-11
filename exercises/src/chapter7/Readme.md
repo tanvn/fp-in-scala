@@ -260,5 +260,30 @@ threads and call the final callback `eval(es)(cb(f(a, b)))` on different
 threads too. And remember, `parMap` uses `fork` too, which means the
 block inside `fork` is executed on a different thread from the thread
 that calls `run`.
+
+### What about ?
   
-  
+  ``` 
+  val p: Par[List[Double]] =parMap(List.range(1,10))(math.sqrt(_))
+```
+
+Almost the same. `foldLeft` with 9 rounds 
+
+- round 1 : map2 with `unit(List.empty)` and `lazyUnit(Math.sqrt(1))` ->
+  `par1`
+- round 2 : `map2` with `par1` and `lazyUnit(Math.sqrt(2))` -> `par2`
+- round 3 : `map2` with `par2` and `lazyUnit(Math.sqrt(3))` -> `par3`
+- round 4: `map2` with `par3` and `lazyUnit(Math.sqrt(4))` -> `par4`
+- round 5: `map2` with `par4` and `lazyUnit(Math.sqrt(5))` -> `par5`
+- round 6: `map2` with `par5` and `lazyUnit(Math.sqrt(6))` -> `par6`
+- round 7: `map2` with `par6` and `lazyUnit(Math.sqrt(7))` -> `par7`
+- round 8: `map2` with `par7` and `lazyUnit(Math.sqrt(8))` -> `par8`
+- round 9: `map2` with `par8` and `lazyUnit(Math.sqrt(9))` -> `par9`
+
+The last par `par9(es)(cb)` will be executed by `run`, and from which
+`par8`, `par7` ... `par1` will be calculated on many different threads.
+Remember, all `lazyUnit(Math.sqrt(n))(es)` will run on different thread
+from the caller thread (because of `fork`), so the calculations are
+really multi-thread.
+
+
