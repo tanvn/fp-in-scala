@@ -68,14 +68,14 @@ final class Actor[A](strategy: Strategy)(
     if (suspended.compareAndSet(1, 0)) schedule()
   }
 
-  private def schedule(): Unit = {
-//    println(s"in schedule ${Thread.currentThread().getName}")
-    val res = strategy.apply(act())()
-    println(s"${Thread.currentThread().getName} res = $res")
-  }
+  private def schedule(): Unit =
+    //    println(s"in schedule ${Thread.currentThread().getName}")
+    strategy.apply(act())
+//    val res = strategy.apply(act())
+//    println(s"${Thread.currentThread().getName} res = ${res()}")
 
   private def act(): Unit = {
-    println(s"in act ${Thread.currentThread().getName}")
+    println(s"${Thread.currentThread().getName} act start")
 
     //the fist Node of tail is a Node with a is null (an empty message) so in the batchHandle, we start handling from the next message
     val t = tail.get
@@ -87,11 +87,12 @@ final class Actor[A](strategy: Strategy)(
     if (n ne t) {
       n.a = null.asInstanceOf[A]
       tail.lazySet(n)
+      println(s"${Thread.currentThread().getName} call schedule")
       //continue handle messages (from 1025 ~)
       schedule()
     } else {
       // if n and t are the same, means all the massages have been handled, re-enable the lock suspended
-      println(s"re-enable lock ${Thread.currentThread().getName}")
+      println(s"${Thread.currentThread().getName} re-enable lock")
       suspended.set(1)
       if (n.get ne null) trySchedule()
     }
@@ -145,21 +146,27 @@ object Strategy {
     */
   def fromExecutorService(es: ExecutorService): Strategy = new Strategy {
 
+    var count = 0;
+
     def apply[A](a: => A): () => A = {
+      count = count + 1
       val f: util.concurrent.Future[A] = es.submit {
         new Callable[A] {
-          def call =
-//            println("Callable called !")
+          def call = {
+            println(s"${Thread.currentThread().getName} Callable called $count !")
             a
+          }
+
         }
       }
+
       () => {
 //        f.cancel(true)
-//        println(s"${Thread.currentThread().getName} is Done ${f.isDone}")
-//        val res = f.get
-//        println(s"here f.get=$res")
-//        res
-        f.get
+        println(s"${Thread.currentThread().getName} is Done ${f.isDone}")
+        val res = f.get
+        count = count - 1
+        println(s"${Thread.currentThread().getName} here f.get=$res, remain= $count")
+        res
       }
     }
   }
