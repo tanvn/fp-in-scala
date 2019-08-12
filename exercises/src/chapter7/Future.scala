@@ -118,10 +118,70 @@ object Future {
     res
   }
 
+  def choiceN[A](n: Par[Int])(choices: List[Par[A]]): Par[A] = es => {
+    new Future[A] {
+      override private[chapter7] def apply(cb: A => Unit): Unit =
+        n(es) { res =>
+          eval(es) {
+            choices(res)(es)(cb)
+          }
+        }
+    }
+  }
+
+  def chooser[A, B](pa: Par[A])(choices: A => Par[B]): Par[B] = es => {
+    new Future[B] {
+      override private[chapter7] def apply(cb: B => Unit): Unit =
+        pa(es) { res =>
+          eval(es) {
+            choices(res)(es)(cb)
+          }
+        }
+    }
+  }
+
+  def choiceNViaChooser[A](n: Par[Int])(choices: List[Par[A]]): Par[A] =
+    chooser(n)(result => choices(result))
+
+  def choiceViaChooser[A](a: Par[Boolean])(ifTrue: Par[A], ifFalse: Par[A]): Par[A] =
+    chooser(a)(res => if (res) ifTrue else ifFalse)
+
+  def choiceMap[K, V](key: Par[K])(choices: Map[K, Par[V]]): Par[V] = es => {
+    new Future[V] {
+      override private[chapter7] def apply(cb: V => Unit): Unit = key(es) { res =>
+        eval(es) {
+          choices(res)(es)(cb)
+        }
+      }
+    }
+  }
+
+  def choiceViaChoiceN[A](a: Par[Boolean])(ifTrue: Par[A], ifFalse: Par[A]): Par[A] =
+    choiceN(map(a)(b => if (b) 0 else 1))(List(ifTrue, ifFalse))
+
+  def join[A](a: Par[Par[A]]): Par[A] =
+    es =>
+      new Future[A] {
+        override private[chapter7] def apply(cb: A => Unit): Unit = a(es) { res: Par[A] =>
+          res(es)(cb)
+        }
+      }
+
+  def join2[A](a: Par[Par[A]]): Par[A] = flatMap(a)(identity)
+
+  def flatMap[A, B](a: Par[A])(f: A => Par[B]): Par[B] = join(map(a)(f))
+
   def main(args: Array[String]): Unit = {
     val p: Par[List[Double]] = parMap(List.range(1, 3))(math.sqrt(_))
     println(s"${Thread.currentThread().getName} run $p")
     val x: Seq[Double] = run(Executors.newFixedThreadPool(2))(p)
     println(s"got $x")
+    val es = Executors.newFixedThreadPool(2)
+    choiceN(unit(1))(List(unit(1), unit(4)))(es)(res => println(res))
+
+    val test = join(lazyUnit(asyncF(Math.log)(10)))
+    test(es) { k =>
+      println(k)
+    }
   }
 }
