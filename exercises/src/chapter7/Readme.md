@@ -6,7 +6,7 @@
   ```
   
   Consider how the block of code above works. When pass to `run`, `p`
-  must be evaluated. 
+  must be evaluated (as a Par, Par is just a description for parallel tasks which will be executed by ServiceExecutor in `run`). 
   
   ``` val p: Par[List[Double]] = parMap(List.range(1,3))(math.sqrt(_))```
   
