@@ -129,6 +129,7 @@ object Future {
     }
   }
 
+  // same as flatMap
   def chooser[A, B](pa: Par[A])(choices: A => Par[B]): Par[B] = es => {
     new Future[B] {
       override private[chapter7] def apply(cb: B => Unit): Unit =

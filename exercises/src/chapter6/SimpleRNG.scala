@@ -1,20 +1,20 @@
 package chapter6
 
-case class SimpleRNG(seed: Long) extends RNG {
-  override def nextInt: (Int, RNG) = {
-    val newSeed = (seed * 0x5DEECE66DL + 0xBL) & 0xFFFFFFFFFFFFL
+case class SimpleRNG(seed: Long) extends RandomGenerator {
+  override def nextInt: (Int, RandomGenerator) = {
+    val newSeed = (seed * 0X5DEECE66DL + 0XBL) & 0XFFFFFFFFFFFFL
     val nextRNG = SimpleRNG(newSeed)
     val n = (newSeed >>> 16).toInt
     (n, nextRNG)
   }
 
-  override def nonNegativeInt: (Int, RNG) = {
+  override def nonNegativeInt: (Int, RandomGenerator) = {
     val (n, nextRNG) = nextInt
     if (n > Int.MinValue) (Math.abs(n), nextRNG)
     else nonNegativeInt
   }
 
-  override def nextStr: (String, RNG) = {
+  override def nextStr: (String, RandomGenerator) = {
     val (num, rng) = nextInt
     (s"$num v", rng)
   }
@@ -22,21 +22,21 @@ case class SimpleRNG(seed: Long) extends RNG {
 
 object SimpleRNG {
 
-  def nonNegativeInt(rng: RNG): (Int, RNG) = {
+  def nonNegativeInt(rng: RandomGenerator): (Int, RandomGenerator) = {
     val (i, r) = rng.nextInt
     (if (i < 0) -(i + 1) else i, r)
   }
 
-  def ints(count: Int)(rng: RNG): (List[Int], RNG) = {
+  def ints(count: Int)(rng: RandomGenerator): (List[Int], RandomGenerator) = {
     (1 to count).foldRight(List.empty[Int], rng)(
-      (_: Int, a: (List[Int], RNG)) => {
+      (_: Int, a: (List[Int], RandomGenerator)) => {
         val (nextInt, nextRNG) = a._2.nextInt
         (a._1 ::: nextInt :: Nil, nextRNG)
       }
     )
 
   }
-  type Rand[+A] = RNG => (A, RNG)
+  type Rand[+A] = RandomGenerator => (A, RandomGenerator)
   val intRand: Rand[Int] = _.nextInt
   // intRand is equivalent to the below (just a sugar syntax of scala using underscore)
   val intRand2: Rand[Int] = (rng) => rng.nextInt
@@ -56,11 +56,11 @@ object SimpleRNG {
     rng => (a, rng)
 
   def map2[A, B, C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] =
-    (rng: RNG) => {
+    (rng: RandomGenerator) => {
       //    val a3 : A = _
       //    val res: (A, RNG) = ra(a3)
-      val (newA, rngA2: RNG) = ra(rng)
-      val (newB, rngB2: RNG) = rb(rngA2)
+      val (newA, rngA2: RandomGenerator) = ra(rng)
+      val (newB, rngB2: RandomGenerator) = rb(rngA2)
 
       (f(newA, newB), rngB2)
 
@@ -114,7 +114,7 @@ object SimpleRNG {
 
   def sequence[A](fs: List[Rand[A]]): Rand[List[A]] = rng => {
     fs.foldLeft(List.empty[A], rng)(
-      (current: (List[A], RNG), next: Rand[A]) => {
+      (current: (List[A], RandomGenerator), next: Rand[A]) => {
         val (nextVal, nextRng) = next(current._2)
         (current._1 ::: nextVal :: Nil, nextRng)
       }
@@ -130,8 +130,8 @@ object SimpleRNG {
 
   // return f(a) and next state of rng
   def map[A, B](s: Rand[A])(f: A => B): Rand[B] =
-    (rng: RNG) => {
-      val (a, rng2: RNG) = s(rng)
+    (rng: RandomGenerator) => {
+      val (a, rng2: RandomGenerator) = s(rng)
       (f(a), rng2)
     }
 
@@ -156,7 +156,7 @@ object SimpleRNG {
     println(mapWithFlatMap(intRand)(i => s"value $i")(seed))
 
     val map2Test = map2(intRand, stringRand)((a, b) => s"$a vs $b")
-    var newSeed: RNG = seed
+    var newSeed: RandomGenerator = seed
     for (_ <- 1 to 10) {
       val res = map2Test(newSeed)
       println(res._1)
