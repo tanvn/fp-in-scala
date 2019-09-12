@@ -19,6 +19,12 @@ sealed trait Stream[+A] {
   def map[B](f: A => B): Stream[B]
 
   def append[B >: A](s: => Stream[B]): Stream[B]
+
+  @annotation.tailrec
+  final def find(f: A => Boolean): Option[A] = this match {
+    case Empty      => None
+    case Cons(h, t) => if (f(h())) Some(h()) else t().find(f)
+  }
 }
 
 case object Empty extends Stream[Nothing] {
@@ -165,6 +171,7 @@ case class Cons[+A](h: () => A, t: () => Stream[A]) extends Stream[A] {
 }
 
 object Stream {
+
   def cons[A](hd: => A, tl: => Stream[A]): Stream[A] = {
     lazy val head = hd
     lazy val tail = tl
@@ -187,9 +194,8 @@ object Stream {
     go(0, 1)
   }
 
-  def fibsFromUnFold: Stream[Int] = {
+  def fibsFromUnFold: Stream[Int] =
     unfold((0, 1))(state => Some(state._1, (state._2, state._1 + state._2)))
-  }
 
   def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = {
     f(z) match {

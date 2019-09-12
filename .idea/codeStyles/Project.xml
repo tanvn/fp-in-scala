@@ -1,0 +1,44 @@
+<component name="ProjectCodeStyleConfiguration">
+  <code_scheme name="Project" version="173">
+    <DB2CodeStyleSettings version="2">
+      <option name="QUERY_SECTION_1ST_WORD_ALIGN" value="2" />
+    </DB2CodeStyleSettings>
+    <DerbyCodeStyleSettings version="2">
+      <option name="QUERY_SECTION_1ST_WORD_ALIGN" value="2" />
+    </DerbyCodeStyleSettings>
+    <H2CodeStyleSettings version="2">
+      <option name="QUERY_SECTION_1ST_WORD_ALIGN" value="2" />
+    </H2CodeStyleSettings>
+    <HSQLCodeStyleSettings version="2">
+      <option name="QUERY_SECTION_1ST_WORD_ALIGN" value="2" />
+    </HSQLCodeStyleSettings>
+    <MSSQLCodeStyleSettings version="2">
+      <option name="QUERY_SECTION_1ST_WORD_ALIGN" value="2" />
+    </MSSQLCodeStyleSettings>
+    <MarkdownNavigatorCodeStyleSettings>
+      <option name="RIGHT_MARGIN" value="72" />
+    </MarkdownNavigatorCodeStyleSettings>
+    <MySQLCodeStyleSettings version="2">
+      <option name="QUERY_SECTION_1ST_WORD_ALIGN" value="2" />
+    </MySQLCodeStyleSettings>
+    <OracleCodeStyleSettings version="2">
+      <option name="QUERY_SECTION_1ST_WORD_ALIGN" value="2" />
+    </OracleCodeStyleSettings>
+    <PostgresCodeStyleSettings version="2">
+      <option name="QUERY_SECTION_1ST_WORD_ALIGN" value="2" />
+    </PostgresCodeStyleSettings>
+    <SQLiteCodeStyleSettings version="2">
+      <option name="QUERY_SECTION_1ST_WORD_ALIGN" value="2" />
+    </SQLiteCodeStyleSettings>
+    <ScalaCodeStyleSettings>
+      <option name="SCALAFMT_REFORMAT_ON_FILES_SAVE" value="true" />
+      <option name="FORMATTER" value="1" />
+    </ScalaCodeStyleSettings>
+    <SqlCodeStyleSettings version="2">
+      <option name="QUERY_SECTION_1ST_WORD_ALIGN" value="2" />
+    </SqlCodeStyleSettings>
+    <SybaseCodeStyleSettings version="2">
+      <option name="QUERY_SECTION_1ST_WORD_ALIGN" value="2" />
+    </SybaseCodeStyleSettings>
+  </code_scheme>
+</component>

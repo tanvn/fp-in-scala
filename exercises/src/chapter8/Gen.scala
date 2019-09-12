@@ -3,6 +3,7 @@ package chapter8
 import chapter6.{RNG, State}
 
 case class Gen[A](sample: State[RNG, A]) {
+  def unsized: SGen[A] = SGen(forSize => Gen(sample))
 
   def flatMap[B](f: A => Gen[B]): Gen[B] = {
     Gen(State(s => {
@@ -78,6 +79,8 @@ object Gen {
   def listOfN[A](n: Int, g: Gen[A]): Gen[List[A]] =
     Gen(State.sequence(List.fill(n)(g.sample)))
 
+  def listOf[A](g: Gen[A]): SGen[List[A]] = SGen(size => listOfN(size, g))
+
   def chooseInt2(start: Int, stopExclusive: Int): Gen[(Int, Int)] = {
     val genInt = choose(start, stopExclusive)
     Gen(State((s: RNG) => {
@@ -94,11 +97,11 @@ object Gen {
     }))
   }
 
-  def flatMap[A](opt: Gen[Option[A]]): Gen[A] = {
-    Gen(State(s => {
-      val (a, s2) = opt.sample.run(s)
-      (a.getOrElse(null), s2)
-    }))
-  }
+//  def flatMap[A](opt: Gen[Option[A]]): Gen[A] = {
+//    Gen(State(s => {
+//      val (a, s2) = opt.sample.run(s)
+//      (a.getOrElse(null), s2)
+//    }))
+//  }
 
 }
