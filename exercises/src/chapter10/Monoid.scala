@@ -20,4 +20,10 @@ object Monoid {
     override def zero: A => A = a => identity(a)
   }
 
+  val stringConcatMonoid = new Monoid[String] {
+    override def op(a1: String, a2: String): String = a1 + a2
+
+    override def zero: String = ""
+  }
+
 }
