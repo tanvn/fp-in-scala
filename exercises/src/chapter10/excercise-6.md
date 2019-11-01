@@ -1,4 +1,5 @@
- The below 2 functions are taken from the 
+ The below 2 functions are taken from the answers of the book
+ Here is the memo how foldRight can be built from foldMap
 
 ```
 def foldMap[A, B](as: List[A], m: Monoid[B])(f: A => B): B =
@@ -13,6 +14,14 @@ def foldRight[A, B](as: List[A])(z: B)(f: (A, B) => B): B =
 When we call foldMap with m is `endoMonoid[B]` (whose is type `Monoid[B => B]`)
 
 as `foldMap(as, endoMonoid[B] )` will return a function with signature : `(A => B => B) => B => B`
+
+Originally foldMap is a curried function, when we give it the first list of parameters (`as` and `endoMonoid[B]`)
+it returns a function that will take the rest of the parameter, here is `f : A => B` and return a result whose type is B
+
+But because B here is actually a shor for : `B => B` (that is what `endoMonoid[B]` is for)
+
+so actually the signature of the function returned by `foldMap(as, endoMonoid[B] )` will be `(A => B => B) => B => B`
+(just replace `B` with `B => B` in `(f : A => B ) => B`
 
 
 then consider the function:
