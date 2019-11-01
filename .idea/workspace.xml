@@ -2,13 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="74f06ac5-680e-4f94-a0e3-022c97411a98" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/fp-in-scala.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exercises/src/chapter5/Stream.scala" beforeDir="false" afterPath="$PROJECT_DIR$/exercises/src/chapter5/Stream.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exercises/src/chapter6/RNG.scala" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exercises/src/chapter8/Gen.scala" beforeDir="false" afterPath="$PROJECT_DIR$/exercises/src/chapter8/Gen.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exercises/src/chapter8/Prop.scala" beforeDir="false" afterPath="$PROJECT_DIR$/exercises/src/chapter8/Prop.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exercises/src/chapter10/ExampleRunner.scala" beforeDir="false" afterPath="$PROJECT_DIR$/exercises/src/chapter10/ExampleRunner.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exercises/src/future/SFuture.scala" beforeDir="false" afterPath="$PROJECT_DIR$/exercises/src/future/SFuture.scala" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -41,6 +38,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1554051060189" />
+    <property name="go.import.settings.migrated" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -211,6 +209,12 @@
       <workItem from="1567941527169" duration="2604000" />
       <workItem from="1568126454707" duration="183000" />
       <workItem from="1568126675001" duration="3250000" />
+      <workItem from="1568259924731" duration="655000" />
+      <workItem from="1568262762585" duration="4200000" />
+      <workItem from="1568350421547" duration="563000" />
+      <workItem from="1568351945151" duration="69000" />
+      <workItem from="1572588846692" duration="6750000" />
+      <workItem from="1572601119152" duration="448000" />
     </task>
     <servers />
   </component>

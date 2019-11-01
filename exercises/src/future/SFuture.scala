@@ -59,5 +59,17 @@ object SFuture {
     println(s"transform: $second")
     println(nonNegative.value)
     println(second.zip(nonNegative))
+    fut.foreach(ex => println(s"foreach $ex"))
+
+    val newFuture: Future[Int] = (fut2 andThen {
+      case Success(res) => println(res)
+      case Failure(ex) => println(ex)
+    })andThen{
+      case Success(res) => println(s"hello $res")
+      case Failure(ex) => println(ex)
+    }
+
+    val mySeq = Seq(1,2,3,4)
+
   }
 }
