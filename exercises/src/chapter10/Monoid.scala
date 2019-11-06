@@ -33,6 +33,7 @@ object Monoid {
     override def zero: Int = 0
   }
 
+  // for exercise 9
   val orderingIntMonoid = new Monoid[(IndexedSeq[Int], Boolean)] {
     override def op(a1: (IndexedSeq[Int], Boolean), a2: (IndexedSeq[Int], Boolean)): (IndexedSeq[Int], Boolean) = {
       if(a1._1.isEmpty) {

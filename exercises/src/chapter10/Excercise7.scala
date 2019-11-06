@@ -1,7 +1,5 @@
 package chapter10
 
-import chapter7.Future.Par
-
 object Excercise7 {
   import Monoid._
   import chapter7.Future._
