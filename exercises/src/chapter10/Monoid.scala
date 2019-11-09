@@ -59,18 +59,23 @@ object Monoid {
     val Space: String = " "
     override def op(a1: WC, a2: WC): WC = (a1, a2) match {
       case (Stub(charsA), Stub(charsB)) => {
-        if (charsA == Space) {
+        if (charsA == Space && charsB == Space) {
+          Stub(charsA)
+        } else if (charsA == Space) {
           Part("", 0, charsB)
         } else if (charsB == Space) {
           Part(charsA, 0, "")
         } else {
           Stub(charsA + charsB)
         }
-
       }
       case (Stub(chars1), Part(lStub, words, rStub)) => {
         if (chars1 == Space) {
-          Part("", words + 1, rStub)
+          if (!lStub.isEmpty) {
+            Part("", words + 1, rStub)
+          } else {
+            Part("", words, rStub)
+          }
         } else {
           Part(chars1 + lStub, words, rStub)
         }
