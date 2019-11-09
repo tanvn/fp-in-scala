@@ -35,13 +35,16 @@ object Monoid {
 
   // for exercise 9
   val orderingIntMonoid = new Monoid[(IndexedSeq[Int], Boolean)] {
-    override def op(a1: (IndexedSeq[Int], Boolean), a2: (IndexedSeq[Int], Boolean)): (IndexedSeq[Int], Boolean) = {
-      if(a1._1.isEmpty) {
+    override def op(
+        a1: (IndexedSeq[Int], Boolean),
+        a2: (IndexedSeq[Int], Boolean)
+    ): (IndexedSeq[Int], Boolean) = {
+      if (a1._1.isEmpty) {
         a2
-      } else if(a2._1.isEmpty) {
+      } else if (a2._1.isEmpty) {
         a1
-      }else {
-        if(a1._1.last > a2._1.head) {
+      } else {
+        if (a1._1.last > a2._1.head) {
           (a2._1, false)
         } else {
           (a1._1 ++ a2._1, a1._2 && a2._2)
@@ -52,5 +55,40 @@ object Monoid {
     override def zero: (IndexedSeq[Int], Boolean) = (IndexedSeq.empty, true)
   }
 
+  val wcMonoid: Monoid[WC] = new Monoid[WC] {
+    val Space: String = " "
+    override def op(a1: WC, a2: WC): WC = (a1, a2) match {
+      case (Stub(charsA), Stub(charsB)) => {
+        if (charsA == Space) {
+          Part("", 0, charsB)
+        } else if (charsB == Space) {
+          Part(charsA, 0, "")
+        } else {
+          Stub(charsA + charsB)
+        }
+
+      }
+      case (Stub(chars1), Part(lStub, words, rStub)) => {
+        if (chars1 == Space) {
+          Part("", words + 1, rStub)
+        } else {
+          Part(chars1 + lStub, words, rStub)
+        }
+
+      }
+      case (Part(lStub, words, rStub), Stub(charsB)) => {
+        if (charsB == Space) {
+          Part(lStub, words + 1, "")
+        } else {
+          Part(lStub, words, rStub + charsB)
+        }
+      }
+      case (Part(lStubA, wordsA, _), Part(_, wordsB, rStubB)) => {
+        Part(lStubA, wordsA + wordsB + 1, rStubB)
+      }
+    }
+
+    override def zero: WC = Stub("")
+  }
 
 }
