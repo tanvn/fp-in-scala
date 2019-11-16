@@ -9,6 +9,7 @@ trait Foldable[F[_]] {
 
   def concatenate[A](as: F[A])(m: Monoid[A]): A =
     foldLeft(as)(m.zero)(m.op)
+  def toList[A](fa: F[A]): List[A] = foldLeft(fa)(List.empty[A])((list, b) => list :+ b)
 }
 
 class FList extends Foldable[List] {
@@ -27,7 +28,7 @@ class FList extends Foldable[List] {
   }
 }
 
-class FStream extends Foldable[Stream] {
+object FStream extends Foldable[Stream] {
   override def foldRight[A, B](as: Stream[A])(z: B)(f: (A, B) => B): B =
     as.foldRight(z)(f)
 
@@ -42,6 +43,19 @@ class FStream extends Foldable[Stream] {
       as.foldLeft(mb.zero)((b, a) => mb.op(b, f(a)))
     }
   }
+}
+
+object FOption extends Foldable[Option] {
+  override def foldRight[A, B](as: Option[A])(z: B)(f: (A, B) => B): B = as match {
+    case Some(value) => f(value, z)
+    case None        => z
+  }
+
+  override def foldLeft[A, B](as: Option[A])(z: B)(f: (B, A) => B): B =
+    foldRight(as)(z)((a, b) => f(b, a))
+
+  override def foldMap[A, B](as: Option[A])(f: A => B)(mb: Monoid[B]): B =
+    foldLeft(as)(mb.zero)((b, a) => mb.op(b, f(a)))
 }
 
 object FTree extends Foldable[Tree] {
@@ -98,8 +112,8 @@ object Foldable {
 //                   root
 //             b1      			     b2
 //         b3     l7=60			l3=13  l4=9
-//    l5=32  b4
-//      l8=51 l6=28
+//   l5=32     b4
+//          l8=51 l6=28
 
     val root = Branch[Int](branch1, branch2)
     val flVal = FTree.foldLeft(root)(0)(_ + _)
@@ -112,6 +126,24 @@ object Foldable {
 
     val fMapIntPlus = FTree.foldMap(root)(identity)(Monoid.plusIntMonoid)
     println(fMapIntPlus)
+
+    val intOpt = Some(19)
+    val fROpt = FOption.foldRight(intOpt)(20)(_ + _)
+    println(fROpt)
+    val fLOpt = FOption.foldLeft(intOpt)(20)(_ + _)
+    println(fLOpt)
+
+    val fMOpt = FOption.foldMap(intOpt)(identity)(Monoid.plusIntMonoid)
+    println(fMOpt)
+    val intNone: Option[Int] = None
+    val fMNone = FOption.foldMap(intNone)(identity)(Monoid.plusIntMonoid)
+    println(fMNone)
+
+    val treeToList = FTree.toList(root)
+    println(treeToList)
+
+    val stream = Stream(1, 3, 4, 5, 6)
+    println(FStream.toList(stream))
 
   }
 }
