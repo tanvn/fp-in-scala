@@ -96,4 +96,31 @@ object Monoid {
     override def zero: WC = Stub("")
   }
 
+  def productMonoid[A, B](monoidA: Monoid[A], monoidB: Monoid[B]): Monoid[(A, B)] =
+    new Monoid[(A, B)] {
+      override def op(a1: (A, B), a2: (A, B)): (A, B) =
+        (monoidA.op(a1._1, a2._1), monoidB.op(a1._2, a2._2))
+
+      override def zero: (A, B) = (monoidA.zero, monoidB.zero)
+    }
+
+  def mapMergeMonoid[K, V](V: Monoid[V]): Monoid[Map[K, V]] =
+    new Monoid[Map[K, V]] {
+      def zero = Map[K, V]()
+
+      def op(a: Map[K, V], b: Map[K, V]) =
+        (a.keySet ++ b.keySet).foldLeft(zero) { (acc, k) =>
+          acc.updated(k, V.op(a.getOrElse(k, V.zero), b.getOrElse(k, V.zero)))
+        }
+    }
+
+  def functionMonoid[A, B](B: Monoid[B]): Monoid[A => B] = new Monoid[A => B] {
+    override def op(a1: A => B, a2: A => B): A => B = { a =>
+      B.op(a1(a), a2(a))
+    }
+    override def zero: A => B = _ => B.zero
+  }
+
+  def bag[A](as: IndexedSeq[A]): Map[A, Int] = ???
+
 }

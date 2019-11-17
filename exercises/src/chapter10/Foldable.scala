@@ -1,5 +1,6 @@
 package chapter10
 
+import chapter10.Monoid._
 import chapter3.{Branch, Leaf, Tree}
 
 trait Foldable[F[_]] {
@@ -12,7 +13,7 @@ trait Foldable[F[_]] {
   def toList[A](fa: F[A]): List[A] = foldLeft(fa)(List.empty[A])((list, b) => list :+ b)
 }
 
-class FList extends Foldable[List] {
+object FList extends Foldable[List] {
   override def foldRight[A, B](as: List[A])(z: B)(f: (A, B) => B): B = as.foldRight(z)(f)
 
   override def foldLeft[A, B](as: List[A])(z: B)(f: (B, A) => B): B = as.foldLeft(z)(f)
@@ -43,6 +44,26 @@ object FStream extends Foldable[Stream] {
       as.foldLeft(mb.zero)((b, a) => mb.op(b, f(a)))
     }
   }
+}
+
+object FIndexedSeq extends Foldable[IndexedSeq] {
+  override def foldRight[A, B](as: IndexedSeq[A])(z: B)(f: (A, B) => B): B = as.foldRight(z)(f)
+
+  override def foldLeft[A, B](as: IndexedSeq[A])(z: B)(f: (B, A) => B): B = as.foldLeft(z)(f)
+
+  override def foldMap[A, B](as: IndexedSeq[A])(f: A => B)(mb: Monoid[B]): B = {
+    if (as.isEmpty) {
+      mb.zero
+    } else if (as.size == 1) {
+      mb.op(mb.zero, f(as.head))
+    } else {
+      val (left, right) = as.splitAt(as.size / 2)
+      mb.op(foldMap(left)(f)(mb), foldMap(right)(f)(mb))
+    }
+  }
+
+  def bag[A](as: IndexedSeq[A]): Map[A, Int] =
+    foldMap(as)(a => Map[A, Int](a -> 1))(mapMergeMonoid(plusIntMonoid))
 }
 
 object FOption extends Foldable[Option] {
@@ -144,6 +165,22 @@ object Foldable {
 
     val stream = Stream(1, 3, 4, 5, 6)
     println(FStream.toList(stream))
+    val funcMonoid: Monoid[Int => String] = functionMonoid(stringConcatMonoid)
+
+    val list = List(1, 2, 3, 4, 5, 6, 7)
+    val res: Int => String = FList.foldMap(list) {
+      a: Int =>
+        { b: Int =>
+//          a.toString + b.toString
+          (a + b).toString
+
+        }
+    }(funcMonoid)
+
+    println(res(100))
+
+    val bagRes = FIndexedSeq.bag(Vector("a", "rose", "is", "a", "rose", "red", "blue", "is"))
+    println(bagRes)
 
   }
 }
