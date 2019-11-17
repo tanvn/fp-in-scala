@@ -182,5 +182,10 @@ object Foldable {
     val bagRes = FIndexedSeq.bag(Vector("a", "rose", "is", "a", "rose", "red", "blue", "is"))
     println(bagRes)
 
+    val lengthAndSumMonoid: Monoid[(Int, Int)] = productMonoid(plusIntMonoid, plusIntMonoid)
+    val intStream = Stream(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+    val streamRes = FStream.foldMap(intStream)(a => (1, a))(lengthAndSumMonoid)
+    println(s"length=${streamRes._1}, sum=${streamRes._2}")
+
   }
 }
