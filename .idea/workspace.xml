@@ -2,12 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="74f06ac5-680e-4f94-a0e3-022c97411a98" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/fp-in-scala.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exercises/src/chapter10/ExampleRunner.scala" beforeDir="false" afterPath="$PROJECT_DIR$/exercises/src/chapter10/ExampleRunner.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exercises/src/future/SFuture.scala" beforeDir="false" afterPath="$PROJECT_DIR$/exercises/src/future/SFuture.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exercises/.scalafmt.conf" beforeDir="false" afterPath="$PROJECT_DIR$/exercises/.scalafmt.conf" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -33,6 +30,11 @@
     <option name="version" value="1" />
   </component>
   <component name="ProjectId" id="1OclmUnOUHTBqB9pjlGXwG8FzdD" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -58,25 +60,26 @@
       <recent name="$PROJECT_DIR$/chapter1" />
     </key>
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
-  </component>
-  <component name="RunManager" selected="Application.SFuture">
-    <configuration name="ActorTest" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="chapter7.ActorTest" />
+  <component name="RunManager" selected="Application.Rational">
+    <configuration name="Excercise7" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="chapter10.Excercise7" />
       <module name="exercises" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="chapter7.*" />
+          <option name="PATTERN" value="chapter10.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Foldable" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="chapter10.Foldable" />
+      <module name="exercises" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="chapter10.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -97,12 +100,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ListTest" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="general.ListTest" />
+    <configuration name="Rational" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="pis_chapter6.Rational" />
       <module name="exercises" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="general.*" />
+          <option name="PATTERN" value="pis_chapter6.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -123,26 +126,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="SavingsAccount" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="traits.SavingsAccount" />
-      <module name="exercises" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="traits.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Rational" />
+        <item itemvalue="Application.Foldable" />
+        <item itemvalue="Application.Excercise7" />
         <item itemvalue="Application.SFuture" />
         <item itemvalue="Application.Future" />
-        <item itemvalue="Application.ActorTest" />
-        <item itemvalue="Application.SavingsAccount" />
-        <item itemvalue="Application.ListTest" />
       </list>
     </recent_temporary>
   </component>
@@ -151,6 +141,18 @@
       <map>
         <entry key="$PROJECT_DIR$/../hrmony-prf" value="PREVIEW" />
       </map>
+    </option>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
     </option>
   </component>
   <component name="SvnConfiguration">
@@ -215,6 +217,14 @@
       <workItem from="1568351945151" duration="69000" />
       <workItem from="1572588846692" duration="6750000" />
       <workItem from="1572601119152" duration="448000" />
+      <workItem from="1573136149251" duration="606000" />
+      <workItem from="1573276256984" duration="1285000" />
+      <workItem from="1573277781518" duration="5757000" />
+      <workItem from="1573885861705" duration="2477000" />
+      <workItem from="1573910169278" duration="79000" />
+      <workItem from="1573910250828" duration="3436000" />
+      <workItem from="1573958850497" duration="3984000" />
+      <workItem from="1577960226014" duration="4772000" />
     </task>
     <servers />
   </component>
@@ -233,6 +243,28 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="1358" height="190" key="GridCell.Tab.0.bottom" timestamp="1578030137956">
+      <screen x="0" y="23" width="1440" height="821" />
+    </state>
+    <state width="1358" height="190" key="GridCell.Tab.0.bottom/0.23.1440.821@0.23.1440.821" timestamp="1578030137956" />
+    <state width="1358" height="190" key="GridCell.Tab.0.center" timestamp="1578030137955">
+      <screen x="0" y="23" width="1440" height="821" />
+    </state>
+    <state width="1358" height="190" key="GridCell.Tab.0.center/0.23.1440.821@0.23.1440.821" timestamp="1578030137955" />
+    <state width="1358" height="190" key="GridCell.Tab.0.left" timestamp="1578030137955">
+      <screen x="0" y="23" width="1440" height="821" />
+    </state>
+    <state width="1358" height="190" key="GridCell.Tab.0.left/0.23.1440.821@0.23.1440.821" timestamp="1578030137955" />
+    <state width="1358" height="190" key="GridCell.Tab.0.right" timestamp="1578030137956">
+      <screen x="0" y="23" width="1440" height="821" />
+    </state>
+    <state width="1358" height="190" key="GridCell.Tab.0.right/0.23.1440.821@0.23.1440.821" timestamp="1578030137956" />
+    <state x="397" y="250" key="com.intellij.ide.util.TipDialog" timestamp="1577960263965">
+      <screen x="0" y="23" width="1440" height="822" />
+    </state>
+    <state x="397" y="250" key="com.intellij.ide.util.TipDialog/0.23.1440.822@0.23.1440.822" timestamp="1577960263965" />
   </component>
   <component name="masterDetails">
     <states>
