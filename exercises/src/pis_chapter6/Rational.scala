@@ -1,5 +1,7 @@
 package pis_chapter6
 
+import java.io.{FileNotFoundException, FileReader, IOException}
+
 class Rational(n: Int, d: Int) {
 
   require(d != 0)
@@ -67,6 +69,22 @@ object Rational {
     println(r3 - r2)
     val r4 = 3 - r2
     println(r4)
+    val n = 19
+    val half: Int =
+      if (n % 2 == 0)
+        n / 2
+      else
+        throw new RuntimeException("n must be even")
 
   }
+
+  def test =
+    try {
+      val f = new FileReader("input.txt")
+      // Use and close file
+    } catch {
+      case ex: FileNotFoundException => // Handle missing file
+      case ex: IOException           => // Handle other I/O error
+
+    }
 }

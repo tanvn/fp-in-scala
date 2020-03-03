@@ -2,8 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="74f06ac5-680e-4f94-a0e3-022c97411a98" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/checkstyle-idea.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/google-java-format.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/markdown-navigator.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/exercises/.scalafmt.conf" beforeDir="false" afterPath="$PROJECT_DIR$/exercises/.scalafmt.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exercises/src/pis_chapter6/Rational.scala" beforeDir="false" afterPath="$PROJECT_DIR$/exercises/src/pis_chapter6/Rational.scala" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,7 +64,7 @@
       <recent name="$PROJECT_DIR$/chapter1" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Rational">
+  <component name="RunManager" selected="Application.Solution">
     <configuration name="Excercise7" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="chapter10.Excercise7" />
       <module name="exercises" />
@@ -87,19 +91,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Future" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="chapter7.Future" />
-      <module name="exercises" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="chapter7.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Rational" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="pis_chapter6.Rational" />
       <module name="exercises" />
@@ -113,12 +104,25 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="SFuture" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="future.SFuture" />
+    <configuration name="Solution" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="leetcode.Solution" />
       <module name="exercises" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="future.*" />
+          <option name="PATTERN" value="leetcode.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TwoSum" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="leetcode.TwoSum" />
+      <module name="exercises" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="leetcode.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -128,11 +132,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Solution" />
+        <item itemvalue="Application.TwoSum" />
         <item itemvalue="Application.Rational" />
         <item itemvalue="Application.Foldable" />
         <item itemvalue="Application.Excercise7" />
-        <item itemvalue="Application.SFuture" />
-        <item itemvalue="Application.Future" />
       </list>
     </recent_temporary>
   </component>
@@ -224,7 +228,9 @@
       <workItem from="1573910169278" duration="79000" />
       <workItem from="1573910250828" duration="3436000" />
       <workItem from="1573958850497" duration="3984000" />
-      <workItem from="1577960226014" duration="4772000" />
+      <workItem from="1577960226014" duration="7083000" />
+      <workItem from="1578034970994" duration="10860000" />
+      <workItem from="1583070674164" duration="4385000" />
     </task>
     <servers />
   </component>
@@ -245,26 +251,42 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state width="1358" height="190" key="GridCell.Tab.0.bottom" timestamp="1578030137956">
+    <state x="567" y="128" key="#com.intellij.ide.util.MemberChooser" timestamp="1583075228884">
       <screen x="0" y="23" width="1440" height="821" />
     </state>
-    <state width="1358" height="190" key="GridCell.Tab.0.bottom/0.23.1440.821@0.23.1440.821" timestamp="1578030137956" />
-    <state width="1358" height="190" key="GridCell.Tab.0.center" timestamp="1578030137955">
+    <state x="567" y="128" key="#com.intellij.ide.util.MemberChooser/0.23.1440.821@0.23.1440.821" timestamp="1583075228884" />
+    <state x="408" y="161" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1578034892869">
       <screen x="0" y="23" width="1440" height="821" />
     </state>
-    <state width="1358" height="190" key="GridCell.Tab.0.center/0.23.1440.821@0.23.1440.821" timestamp="1578030137955" />
-    <state width="1358" height="190" key="GridCell.Tab.0.left" timestamp="1578030137955">
+    <state x="408" y="161" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.23.1440.821@0.23.1440.821" timestamp="1578034892869" />
+    <state width="1358" height="190" key="GridCell.Tab.0.bottom" timestamp="1578072572340">
       <screen x="0" y="23" width="1440" height="821" />
     </state>
-    <state width="1358" height="190" key="GridCell.Tab.0.left/0.23.1440.821@0.23.1440.821" timestamp="1578030137955" />
-    <state width="1358" height="190" key="GridCell.Tab.0.right" timestamp="1578030137956">
+    <state width="1358" height="190" key="GridCell.Tab.0.bottom/0.23.1440.821@0.23.1440.821" timestamp="1578072572340" />
+    <state width="1358" height="190" key="GridCell.Tab.0.bottom/0.23.1440.822@0.23.1440.822" timestamp="1578041271810" />
+    <state width="1358" height="190" key="GridCell.Tab.0.center" timestamp="1578072572340">
       <screen x="0" y="23" width="1440" height="821" />
     </state>
-    <state width="1358" height="190" key="GridCell.Tab.0.right/0.23.1440.821@0.23.1440.821" timestamp="1578030137956" />
+    <state width="1358" height="190" key="GridCell.Tab.0.center/0.23.1440.821@0.23.1440.821" timestamp="1578072572340" />
+    <state width="1358" height="190" key="GridCell.Tab.0.center/0.23.1440.822@0.23.1440.822" timestamp="1578041271810" />
+    <state width="1358" height="190" key="GridCell.Tab.0.left" timestamp="1578072572339">
+      <screen x="0" y="23" width="1440" height="821" />
+    </state>
+    <state width="1358" height="190" key="GridCell.Tab.0.left/0.23.1440.821@0.23.1440.821" timestamp="1578072572339" />
+    <state width="1358" height="190" key="GridCell.Tab.0.left/0.23.1440.822@0.23.1440.822" timestamp="1578041271809" />
+    <state width="1358" height="190" key="GridCell.Tab.0.right" timestamp="1578072572340">
+      <screen x="0" y="23" width="1440" height="821" />
+    </state>
+    <state width="1358" height="190" key="GridCell.Tab.0.right/0.23.1440.821@0.23.1440.821" timestamp="1578072572340" />
+    <state width="1358" height="190" key="GridCell.Tab.0.right/0.23.1440.822@0.23.1440.822" timestamp="1578041271810" />
     <state x="397" y="250" key="com.intellij.ide.util.TipDialog" timestamp="1577960263965">
       <screen x="0" y="23" width="1440" height="822" />
     </state>
     <state x="397" y="250" key="com.intellij.ide.util.TipDialog/0.23.1440.822@0.23.1440.822" timestamp="1577960263965" />
+    <state x="385" y="168" width="670" height="676" key="search.everywhere.popup" timestamp="1578039599604">
+      <screen x="0" y="23" width="1440" height="821" />
+    </state>
+    <state x="385" y="168" width="670" height="676" key="search.everywhere.popup/0.23.1440.821@0.23.1440.821" timestamp="1578039599604" />
   </component>
   <component name="masterDetails">
     <states>
